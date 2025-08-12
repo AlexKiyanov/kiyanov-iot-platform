@@ -1,0 +1,63 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_TOP_DOWN()
+
+System_Boundary(iot_platform, "IoT Monitoring Platform") {
+
+  Container_Ext(ext_iot, "IoT Devices", "Встраиваемые устройства: отправляют телеметрию и получают команды")
+  Container(api_gateway, "API Gateway", "Spring Cloud Gateway", "Маршрутизация и авторизация (OIDC)")
+  Container_Ext(keycloak, "Keycloak", "OAuth2 / OpenID Connect", "Аутентификация и авторизация")
+  Container(api_orchestrator, "API Orchestrator", "Spring Boot", "Оркестратор: вызывает Event, Device и Command сервисы")
+  Container(command_service, "Command Service", "Go + gRPC", "Принимает команды по gRPC и отдает их устройствам")
+  Container(device_service, "Device Service", "Spring Boot + ShardingJDBC", "CRUD API по устройствам")
+  Container(event_service, "Event Service", "Spring Boot", "Чтение событий из Cassandra")
+  Container(events_collector, "Events Collector", "Spring Boot", "Kafka → Cassandra + device-id")
+  Container(device_collector, "Device Collector", "Spring Boot", "Сохраняет device-id в PostgreSQL")
+  Container(failed_events_processor, "Failed Events Processor", "Spring Boot", "DLT → JSON в MinIO")
+  Container_Ext(redis, "Redis", "In-memory Cache", "Кэширование запросов")
+  Container_Ext(cassandra, "Cassandra Cluster", "NoSQL", "Хранение событий")
+  Container_Ext(camunda, "Camunda BPM", "BPM Platform", "Движок бизнес-процессов")
+
+  Container_Ext(postgres_devices, "PostgreSQL (Devices)", "Реляционная БД", "Шардированная БД устройств")
+  Container_Ext(postgres_commands, "PostgreSQL (Commands)", "Реляционная БД", "Отдельная база для команд")
+  Container_Ext(kafka_cluster, "Kafka Cluster", "Kafka", "event / dlt / device-id топики")
+  Container_Ext(zookeeper, "Zookeeper", "Apache Zookeeper", "Координация Kafka")
+  Container_Ext(schema_registry, "Schema Registry", "Confluent", "Схемы Kafka сообщений")
+  Container_Ext(kafka_ui, "Kafka UI", "Web UI", "Управление Kafka")
+  Container_Ext(minio, "MinIO", "Объектное хранилище", "Сохранение ошибок DLT")
+  Container_Ext(prometheus, "Prometheus", "Monitoring", "Сбор метрик")
+  Container_Ext(grafana, "Grafana", "Dashboard", "Визуализация метрик")
+  Container_Ext(loki, "Loki", "Logs Storage", "Хранение логов")
+  Container_Ext(tempo, "Tempo", "Tracing Storage", "Хранение трассировок")
+}
+
+Rel(ext_iot, command_service, "Отправка команд", "gRPC")
+Rel(ext_iot, api_gateway, "Отправка телеметрии / команд", "HTTP/REST")
+Rel(kafka_cluster, kafka_ui, "Управление топиками", "HTTP")
+
+Rel(api_gateway, keycloak, "OIDC авторизация", "OIDC/JWT")
+Rel(api_gateway, api_orchestrator, "Маршрутизация", "REST")
+Rel(api_orchestrator, event_service, "Вызов API", "REST")
+Rel(api_orchestrator, device_service, "Вызов API", "REST")
+Rel(api_orchestrator, command_service, "Вызов API", "REST")
+
+Rel(command_service, postgres_commands, "Хранение команд", "JDBC")
+Rel(device_service, postgres_devices, "Хранение устройств", "JDBC (Sharding)")
+Rel(event_service, cassandra, "Чтение событий", "CQL")
+Rel(events_collector, kafka_cluster, "Consume events-topic", "Kafka")
+Rel(events_collector, cassandra, "Write события", "CQL")
+Rel(events_collector, kafka_cluster, "Produce device-id-topic", "Kafka")
+Rel(device_collector, kafka_cluster, "Consume device-id-topic", "Kafka")
+Rel(device_collector, postgres_devices, "Запись device-id", "JDBC")
+Rel(failed_events_processor, kafka_cluster, "Consume dlt-topic", "Kafka")
+Rel(failed_events_processor, minio, "Save JSON", "S3 API")
+
+Rel(api_orchestrator, redis, "Кэширование запросов")
+Rel(camunda, api_orchestrator, "Оркестрация процессов", "REST/Java API")
+
+Rel(kafka_cluster, zookeeper, "Метаданные топиков")
+Rel(kafka_cluster, schema_registry, "Проверка схем")
+Rel(prometheus, grafana, "Метрики", "Prometheus API")
+Rel(loki, grafana, "Логи", "Loki API")
+Rel(tempo, grafana, "Трейсы", "Tempo API")
+@enduml

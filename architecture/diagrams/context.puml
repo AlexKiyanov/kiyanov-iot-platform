@@ -1,0 +1,15 @@
+@startuml Context
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(engineer, "Инженер", "DevOps-инженер, настраивающий платформу")
+System(System_IoT, "IoT Microservice Platform", "Микросервисная IoT-платформа")
+System_Ext(device, "IoT-устройство", "Внешний датчик или контроллер, отправляет данные")
+System_Ext(keycloak, "Keycloak", "Сервер аутентификации (SSO)")
+System_Ext(grafana, "Grafana", "Мониторинг и дашборды")
+
+Rel(engineer, System_IoT, "Управление и мониторинг платформы", "HTTP/REST, UI")
+Rel(device, System_IoT, "Телеметрия и команды", "MQTT/HTTP")
+Rel(engineer, grafana, "Просмотр метрик и логов", "HTTP (dashboards)")
+Rel(System_IoT, keycloak, "Запрос токена / проверка JWT", "OIDC")
+Rel(System_IoT, grafana, "Экспорт метрик и логов", "Prometheus, Loki")
+@enduml
