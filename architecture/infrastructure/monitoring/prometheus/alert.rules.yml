@@ -1,0 +1,11 @@
+groups:
+  - name: example-alerts
+    rules:
+      - alert: HighCPU
+        expr: (100 - (avg by(instance)(irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)) > 60
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Высокая загрузка CPU на {{ $labels.instance }}"
+          description: "CPU > 60% более 1 минуты"
