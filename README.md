@@ -2,7 +2,8 @@
 
 ## Описание
 
-IoT Microservice Platform – учебный проект, демонстрирующий архитектуру микросервисов для IoT. Содержит инфраструктуру (Kafka, PostgreSQL, Grafana и др.) и пример реализации процессов IoT.
+IoT Microservice Platform – учебный проект, демонстрирующий архитектуру микросервисов для IoT. Содержит инфраструктуру (
+Kafka, PostgreSQL, Grafana и др.) и пример реализации процессов IoT.
 
 ## Структура проекта
 
@@ -13,6 +14,10 @@ kiyanov-iot-platform/
 │   ├── infrastructure
 │   │   ├── monitoring
 │   │   │   ├── alloy
+│   │   │   ├── grafana-dashboards
+│   │   │   ├── grafana-provisioning
+│   │   │   │   ├── dashboards
+│   │   │   │   └── datasources
 │   │   │   ├── loki
 │   │   │   ├── prometeus
 │   │   │   └── tempo
@@ -71,4 +76,5 @@ docker-compose up -d
 * Keycloak
 
 ## Автор
-[Aleksey Kiyanov](t.me/fuku_ro_u)
+
+[Aleksey Kiyanov](https://t.me/fuku_ro_u)
