@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "DeviceEvent",
+  "namespace": "com.github.alexkiyanov.iotplatform.ecs.avro",
+  "fields": [
+    { "name": "eventId", "type": "string" },
+    { "name": "deviceId", "type": "string" },
+    { "name": "timestamp", "type": "long" },
+    { "name": "type", "type": "string" },
+    { "name": "payload", "type": "string" }
+  ]
+}
