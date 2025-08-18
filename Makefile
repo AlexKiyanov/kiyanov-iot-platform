@@ -1,4 +1,4 @@
-DC = architecture/infrastructure/docker-compose.yaml
+DC = ./docker-compose.yaml
 .PHONY: up down logs ps
 up:
 	@echo "Starting IoT platform services..."
