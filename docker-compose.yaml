@@ -7,7 +7,7 @@ services:
       - "${POSTGRES_PORT_EX}:${POSTGRES_PORT_IN}"
     volumes:
       - pg_data:/var/lib/postgresql/data
-      - ./postgres-init:/docker-entrypoint-initdb.d:ro
+      - ./architecture/infrastructure/postgres-init:/docker-entrypoint-initdb.d:ro
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -245,8 +245,8 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./monitoring/prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml
+      - ./architecture/infrastructure/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./architecture/infrastructure/monitoring/prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml
     networks:
       - iot-platform-net
     healthcheck:
@@ -275,9 +275,9 @@ services:
       - iot-platform-net
     volumes:
       - grafana-storage:/var/lib/grafana
-      - ./monitoring/grafana-dashboards:/var/lib/grafana/dashboards
-      - ./monitoring/grafana-provisioning/dashboards:/etc/grafana/provisioning/dashboards
-      - ./monitoring/grafana-provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./architecture/infrastructure/monitoring/grafana-dashboards:/var/lib/grafana/dashboards
+      - ./architecture/infrastructure/monitoring/grafana-provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./architecture/infrastructure/monitoring/grafana-provisioning/datasources:/etc/grafana/provisioning/datasources
     healthcheck:
       test: [ "CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health" ]
       interval: 10s
@@ -293,7 +293,7 @@ services:
     command: -config.file=/etc/loki/loki-config.yaml
     user: "root"
     volumes:
-      - ./monitoring/loki/loki-config.yaml:/etc/loki/loki-config.yaml:ro
+      - ./architecture/infrastructure/monitoring/loki/loki-config.yaml:/etc/loki/loki-config.yaml:ro
       - loki_chunks:/tmp/loki/chunks
       - loki_index:/tmp/loki/index
       - loki_rules:/tmp/loki/rules
@@ -315,7 +315,7 @@ services:
       - "4317:4317"   # OTLP gRPC (важно!)
       - "4318:4318"   # OTLP HTTP (если нужен)
     volumes:
-      - ./monitoring/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - ./architecture/infrastructure/monitoring/alloy/config.alloy:/etc/alloy/config.alloy:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/log:/var/log:ro
@@ -344,7 +344,7 @@ services:
     restart: unless-stopped
     command: [ "-config.file=/etc/tempo/tempo.yaml" ]
     volumes:
-      - ./monitoring/tempo/tempo.yaml:/etc/tempo/tempo.yaml
+      - ./architecture/infrastructure/monitoring/tempo/tempo.yaml:/etc/tempo/tempo.yaml
       - tempo_data:/var/tempo
     depends_on:
       - create-tempo-bucket
@@ -411,6 +411,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    networks:
+      - iot-platform-net
 
   redis:
     image: redis:latest
@@ -425,6 +427,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    networks:
+      - iot-platform-net
 
   cassandra:
     image: cassandra:latest
@@ -444,7 +448,38 @@ services:
       interval: 30s
       timeout: 15s
       retries: 10
+    networks:
+      - iot-platform-net
 
+  ecs:
+    container_name: events-collector-service
+    ports:
+      - "8090:8090"
+    build:
+      context: ./events-collector-service
+    command: ["java", "-jar", "app.jar"]
+    environment:
+      OTEL_SERVICE_NAME: event-consumer
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://alloy:4318
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+      OTEL_METRICS_EXPORTER: none
+      OTEL_TRACES_EXPORTER: otlp
+      OTEL_LOGS_EXPORTER: none
+      OTEL_RESOURCE_ATTRIBUTES: service.version=1.0.0,deployment.environment=docker
+      CASSANDRA_CONTACT_POINTS: cassandra
+      CASSANDRA_PORT: 9042
+      CASSANDRA_DC: datacenter1
+      CASSANDRA_KEYSPACE: ecs
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
+      cassandra:
+        condition: service_healthy
+    networks:
+      - iot-platform-net
 
 networks:
   iot-platform-net:

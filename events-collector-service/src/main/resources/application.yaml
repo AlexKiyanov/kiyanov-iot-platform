@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: events-collector-service
+  kafka:
+    bootstrap-servers: kafka1:9092,kafka2:9093,kafka3:9094
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP:ecs-consumer}
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      properties:
+        specific.avro.reader: true
+        schema.registry.url: ${SCHEMA_REGISTRY_URL:http://schema-registry:8081}
+    listener:
+      ack-mode: BATCH
+      type: BATCH
+      concurrency: ${KAFKA_CONCURRENCY:3}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  cassandra:
+    contact-points: cassandra:9042
+    local-datacenter: datacenter1
+    keyspace-name: ecs
+    schema-action: create_if_not_exists
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,info,metrics,env,loggers
+    endpoint:
+      health:
+        show-details: always
+
+  app:
+    topics:
+      input: ${INPUT_TOPIC:events}
+      deviceId: ${DEVICE_ID_TOPIC:device-id-topic}
+    cache:
+      deviceIdTtl: ${DEVICE_ID_TTL_MINUTES:1440}

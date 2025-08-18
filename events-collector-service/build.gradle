@@ -1,3 +1,5 @@
+import com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version "$springBootVersion"
@@ -34,6 +36,7 @@ dependencies {
     implementation 'org.springframework.kafka:spring-kafka'
     implementation "io.confluent:kafka-avro-serializer:$avroSerializerVersion"
     implementation "org.apache.avro:avro:1.11.3"
+    implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -55,7 +58,7 @@ sourceSets {
     }
 }
 
-task generateAvroClasses(type: com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask) {
+task generateAvroClasses(type: GenerateAvroJavaTask) {
     source = fileTree(dir: "src/main/resources/avro", include: "**/*.avsc")
     outputDir = file("src/main/java")
     fieldVisibility = 'PRIVATE'
