@@ -25,6 +25,10 @@ public class DeviceIdPublisher {
     }
 
     public void publishIfNew(String deviceId) {
+        if (deviceId == null) {
+            return;
+        }
+        
         final Boolean prev = cache.getIfPresent(deviceId);
 
         if (prev == null) {
