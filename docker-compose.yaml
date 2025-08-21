@@ -451,6 +451,21 @@ services:
     networks:
       - iot-platform-net
 
+  cassandra-init:
+    build:
+      context: ./architecture/infrastructure/cassandra-init
+      dockerfile: cassandra-init.Dockerfile
+    container_name: cassandra-init
+    restart: "no"
+    environment:
+      - CASSANDRA_HOST=${CASSANDRA_HOST}
+      - CASSANDRA_PORT=${CASSANDRA_PORT_IN}
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    networks:
+      - iot-platform-net
+
   ecs:
     container_name: events-collector-service
     ports:
@@ -466,8 +481,8 @@ services:
       OTEL_TRACES_EXPORTER: otlp
       OTEL_LOGS_EXPORTER: none
       OTEL_RESOURCE_ATTRIBUTES: service.version=1.0.0,deployment.environment=docker
-      CASSANDRA_CONTACT_POINTS: cassandra
-      CASSANDRA_PORT: 9042
+      CASSANDRA_CONTACT_POINTS: ${CASSANDRA_HOST}
+      CASSANDRA_PORT: ${CASSANDRA_PORT_IN}
       CASSANDRA_DC: datacenter1
       CASSANDRA_KEYSPACE: ecs
 
@@ -476,8 +491,8 @@ services:
         condition: service_healthy
       schema-registry:
         condition: service_healthy
-      cassandra:
-        condition: service_healthy
+      cassandra-init:
+        condition: service_completed_successfully
     networks:
       - iot-platform-net
 
