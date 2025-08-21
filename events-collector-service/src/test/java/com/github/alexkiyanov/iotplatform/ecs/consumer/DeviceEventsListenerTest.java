@@ -84,7 +84,7 @@ class DeviceEventsListenerTest {
         List<DeviceEventEntity> savedEntities = entitiesCaptor.getValue();
         assertThat(savedEntities).hasSize(1);
         
-        DeviceEventEntity savedEntity = savedEntities.get(0);
+        DeviceEventEntity savedEntity = savedEntities.getFirst();
         assertThat(savedEntity.getKey().getEventId()).isEqualTo("event-1");
         assertThat(savedEntity.getKey().getDeviceId()).isEqualTo("device-1");
         assertThat(savedEntity.getTimestamp()).isEqualTo(1000L);
@@ -114,7 +114,7 @@ class DeviceEventsListenerTest {
         assertThat(savedEntities).hasSize(3);
         
         // Verify first entity
-        DeviceEventEntity savedEntity1 = savedEntities.get(0);
+        DeviceEventEntity savedEntity1 = savedEntities.getFirst();
         assertThat(savedEntity1.getKey().getEventId()).isEqualTo("event-1");
         assertThat(savedEntity1.getKey().getDeviceId()).isEqualTo("device-1");
         
@@ -185,7 +185,7 @@ class DeviceEventsListenerTest {
         List<DeviceEventEntity> savedEntities = entitiesCaptor.getValue();
         assertThat(savedEntities).hasSize(1);
         
-        DeviceEventEntity savedEntity = savedEntities.get(0);
+        DeviceEventEntity savedEntity = savedEntities.getFirst();
         assertThat(savedEntity.getType()).isNull();
         assertThat(savedEntity.getPayload()).isNull();
     }
@@ -207,7 +207,7 @@ class DeviceEventsListenerTest {
         List<DeviceEventEntity> savedEntities = entitiesCaptor.getValue();
         assertThat(savedEntities).hasSize(1);
         
-        DeviceEventEntity savedEntity = savedEntities.get(0);
+        DeviceEventEntity savedEntity = savedEntities.getFirst();
         assertThat(savedEntity.getType()).isEmpty();
         assertThat(savedEntity.getPayload()).isEmpty();
     }
@@ -229,8 +229,8 @@ class DeviceEventsListenerTest {
         List<DeviceEventEntity> savedEntities = entitiesCaptor.getValue();
         assertThat(savedEntities).hasSize(1);
         
-        DeviceEventEntity savedEntity = savedEntities.get(0);
-        assertThat(savedEntity.getTimestamp()).isEqualTo(0L);
+        DeviceEventEntity savedEntity = savedEntities.getFirst();
+        assertThat(savedEntity.getTimestamp()).isZero();
     }
 
     private DeviceEvent createDeviceEvent(String eventId, String deviceId, Long timestamp, String type, String payload) {
