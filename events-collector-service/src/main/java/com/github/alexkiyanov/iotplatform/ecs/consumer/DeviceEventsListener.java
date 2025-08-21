@@ -39,14 +39,12 @@ public class DeviceEventsListener {
         log.info("Received batch: {} messages from {}", events.size(), inputTopic);
 
         final List<DeviceEventEntity> entities = events.stream()
-                .map(e ->
-                        new DeviceEventEntity(
-                                new DeviceEventKey(e.getDeviceId(), e.getEventId()),
-                                e.getTimestamp(),
-                                e.getType(),
-                                e.getPayload()
-                        ))
-                .toList();
+                .map(e -> new DeviceEventEntity(
+                        new DeviceEventKey(e.getDeviceId(), e.getEventId()),
+                        e.getTimestamp(),
+                        e.getType(),
+                        e.getPayload())
+                ).toList();
 
         repo.saveAll(entities);
 

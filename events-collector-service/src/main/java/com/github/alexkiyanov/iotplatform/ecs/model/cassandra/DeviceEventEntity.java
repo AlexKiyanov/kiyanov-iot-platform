@@ -21,4 +21,36 @@ public class DeviceEventEntity {
         this.type = type;
         this.payload = payload;
     }
+
+    public DeviceEventKey getKey() {
+        return key;
+    }
+
+    public void setKey(DeviceEventKey key) {
+        this.key = key;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getPayload() {
+        return payload;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
 }
