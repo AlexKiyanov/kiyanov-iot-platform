@@ -1,0 +1,14 @@
+.git
+.gitignore
+README.md
+Makefile
+*.md
+docker-compose.yaml
+.env
+.idea
+.vscode
+node_modules
+target
+build
+*.log
+.DS_Store
