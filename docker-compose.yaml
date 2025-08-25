@@ -474,6 +474,7 @@ services:
       context: ./events-collector-service
     command: ["java", "-jar", "app.jar"]
     environment:
+      SPRING_PROFILES_ACTIVE: docker
       OTEL_SERVICE_NAME: event-consumer
       OTEL_EXPORTER_OTLP_ENDPOINT: http://alloy:4318
       OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
@@ -493,6 +494,29 @@ services:
         condition: service_healthy
       cassandra-init:
         condition: service_completed_successfully
+    networks:
+      - iot-platform-net
+
+  event-producer:
+    container_name: event-producer
+    ports:
+      - "8091:8091"
+    build:
+      context: ./event-producer
+    command: ["java", "-jar", "app.jar"]
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka1:9092,kafka2:9093,kafka3:9094
+      SPRING_KAFKA_PRODUCER_PROPERTIES_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+    depends_on:
+      schema-registry:
+        condition: service_healthy
+      kafka1:
+        condition: service_healthy
+      kafka2:
+        condition: service_healthy
+      kafka3:
+        condition: service_healthy
     networks:
       - iot-platform-net
 

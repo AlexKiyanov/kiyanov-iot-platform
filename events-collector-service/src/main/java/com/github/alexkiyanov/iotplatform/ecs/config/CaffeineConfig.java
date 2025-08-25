@@ -12,7 +12,7 @@ import java.time.Duration;
 public class CaffeineConfig {
 
     @Bean
-    public Cache<String, Boolean> deviceIdCache(@Value("${spring.app.cache.deviceIdTtl}") long ttlMinutes) {
+    public Cache<String, Boolean> deviceIdCache(@Value("${app.cache.deviceIdTtl}") long ttlMinutes) {
         return Caffeine.newBuilder()
                 .expireAfterWrite(Duration.ofMinutes(ttlMinutes))
                 .maximumSize(1_000_000).build();

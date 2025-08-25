@@ -22,6 +22,12 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    integrationTestImplementation {
+        extendsFrom testImplementation
+    }
+    integrationTestRuntimeOnly {
+        extendsFrom testRuntimeOnly
+    }
 }
 
 repositories {
@@ -32,26 +38,38 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-data-cassandra'
-    implementation 'org.springframework.kafka:spring-kafka'
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-cache"
+    implementation "org.springframework.boot:spring-boot-starter-data-cassandra"
+    implementation "org.springframework.kafka:spring-kafka"
     implementation "io.confluent:kafka-avro-serializer:$avroSerializerVersion"
-    implementation "org.apache.avro:avro:1.11.3"
-    implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    implementation "org.apache.avro:avro:$avroVersion"
+    implementation "io.micrometer:micrometer-registry-prometheus"
+    implementation "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
+    implementation "io.micrometer:micrometer-core"
+    implementation "io.micrometer:micrometer-registry-prometheus"
+    implementation "io.micrometer:micrometer-registry-jmx"
+    implementation "io.opentelemetry:opentelemetry-api"
+    implementation "io.opentelemetry:opentelemetry-sdk"
+    implementation "io.opentelemetry:opentelemetry-exporter-otlp"
+    implementation "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure"
+    compileOnly "org.projectlombok:lombok"
+    annotationProcessor "org.projectlombok:lombok"
     
     // Test dependencies
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.kafka:spring-kafka-test'
-    testImplementation 'org.testcontainers:junit-jupiter:1.21.3'
-    testImplementation 'org.testcontainers:kafka:1.21.3'
-    testImplementation 'org.testcontainers:cassandra:1.21.3'
-    testImplementation 'org.testcontainers:postgresql:1.21.3'
-    testImplementation 'org.mockito:mockito-core:5.8.0'
-    testImplementation 'org.mockito:mockito-junit-jupiter:5.8.0'
-    testImplementation 'org.assertj:assertj-core:3.24.2'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework.boot:spring-boot-starter-web"
+    testImplementation "org.springframework.kafka:spring-kafka-test"
+    testImplementation "org.testcontainers:junit-jupiter:$testContainersVersion"
+    testImplementation "org.testcontainers:kafka:$testContainersVersion"
+    testImplementation "org.testcontainers:cassandra:$testContainersVersion"
+    testImplementation "org.testcontainers:postgresql:$testContainersVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
+    testImplementation "org.awaitility:awaitility:4.2.0"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 }
 
 avro {
@@ -79,14 +97,67 @@ tasks.register('generateAvroClasses', GenerateAvroJavaTask) {
 compileJava.dependsOn generateAvroClasses
 
 clean {
-    delete 'src/main/java/com/github/alexkiyanov/iotplatform/ecs/avro'
+    delete 'src/main/java/com/github/alexkiyanov/iotplatform/avro'
 }
 
+// Unit tests task
+tasks.register('unitTest', Test) {
+    description = 'Runs unit tests only'
+    group = 'verification'
+    
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    
+    // Exclude integration tests
+    exclude '**/integration/**'
+}
+
+// Integration tests task
+tasks.register('integrationTest', Test) {
+    description = 'Runs integration tests only'
+    group = 'verification'
+    
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    
+    // Include only integration tests
+    include '**/integration/**'
+    
+    // Run after unit tests
+    dependsOn unitTest
+    
+    // Set system properties for integration tests
+    systemProperty 'spring.profiles.active', 'integration-test'
+}
+
+// Full test suite (unit + integration)
+tasks.register('fullTest', Test) {
+    description = 'Runs all tests (unit + integration)'
+    group = 'verification'
+    
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    
+    // Include all tests
+    include '**/*Test.class'
+    
+    // Run after unit tests
+    dependsOn unitTest
+}
+
+// Default test task runs only unit tests
 tasks.named('test') {
     useJUnitPlatform()
 }
 
+build.dependsOn fullTest
+
 jacocoTestReport {
+    dependsOn generateAvroClasses, compileJava, processResources
+    
     reports {
         xml.required = true
         html.required = true
@@ -109,6 +180,9 @@ jacocoTestReport {
 }
 
 jacocoTestCoverageVerification {
+    dependsOn unitTest, integrationTest
+    executionData fileTree(dir: "${buildDir}/jacoco", include: "*.exec")
+    
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
@@ -142,4 +216,37 @@ jacocoTestCoverageVerification {
     }
 }
 
-test.finalizedBy jacocoTestCoverageVerification
+
+// Coverage report for integration tests
+tasks.register('jacocoIntegrationTestReport', JacocoReport) {
+    dependsOn generateAvroClasses, compileJava, processResources, integrationTest
+    executionData integrationTest
+    sourceSets sourceSets.main
+    
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+afterEvaluate {
+    jacocoIntegrationTestReport {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                // Исключаем автогенерируемые Avro классы
+                '**/avro/**',
+                // Исключаем классы конфигурации
+                '**/config/**',
+                // Исключаем главный класс приложения
+                '**/EventsCollectorServiceApplication.class',
+                // Исключаем модели/сущности (POJO/DTO)
+                '**/model/**'
+            ])
+        }))
+    }
+}
+
+integrationTest.finalizedBy jacocoIntegrationTestReport
+
+// Включаем проверку покрытия для fullTest
+fullTest.finalizedBy jacocoTestCoverageVerification

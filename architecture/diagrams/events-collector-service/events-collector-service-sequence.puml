@@ -1,0 +1,14 @@
+@startuml
+actor KafkaBroker
+participant "EventsCollectorService" as ECS
+participant "AvroDeserializer" as AVRO
+participant "Cassandra" as DB
+participant "KafkaProducer" as KP
+
+KafkaBroker -> ECS : событие в Avro (DeviceEvent)
+ECS -> AVRO : десериализация Avro
+AVRO --> ECS : DeviceEvent DTO
+ECS -> DB : сохранить событие (по deviceId)
+ECS -> KP : отправить deviceId в "device-id-topic"
+KP --> KafkaBroker : produce deviceId
+@enduml

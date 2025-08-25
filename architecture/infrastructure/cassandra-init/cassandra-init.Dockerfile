@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
 
 # Копируем скрипт инициализации
 COPY cassandra-init.sh /usr/local/bin/
-COPY ../../events-collector-service/src/main/resources/schema.cql /schema/
+COPY schema.cql /schema/
 
 # Делаем скрипт исполняемым
 RUN chmod +x /usr/local/bin/cassandra-init.sh

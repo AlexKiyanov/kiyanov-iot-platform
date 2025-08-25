@@ -3,7 +3,7 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package com.github.alexkiyanov.iotplatform.ecs.avro;
+package com.github.alexkiyanov.iotplatform.avro;
 
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.specific.SpecificData;
@@ -14,10 +14,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 253525621788188290L;
+  private static final long serialVersionUID = 5142460564187090688L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"DeviceEvent\",\"namespace\":\"com.github.alexkiyanov.iotplatform.ecs.avro\",\"fields\":[{\"name\":\"eventId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"deviceId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"timestamp\",\"type\":\"long\"},{\"name\":\"type\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"payload\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"DeviceEvent\",\"namespace\":\"com.github.alexkiyanov.iotplatform.avro\",\"fields\":[{\"name\":\"eventId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"deviceId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"timestamp\",\"type\":\"long\"},{\"name\":\"type\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"payload\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -224,8 +224,8 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
    * Creates a new DeviceEvent RecordBuilder.
    * @return A new DeviceEvent RecordBuilder
    */
-  public static com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder newBuilder() {
-    return new com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder();
+  public static com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder newBuilder() {
+    return new com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder();
   }
 
   /**
@@ -233,11 +233,11 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
    * @param other The existing builder to copy.
    * @return A new DeviceEvent RecordBuilder
    */
-  public static com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder newBuilder(com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder other) {
+  public static com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder newBuilder(com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder other) {
     if (other == null) {
-      return new com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder();
+      return new com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder();
     } else {
-      return new com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder(other);
+      return new com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder(other);
     }
   }
 
@@ -246,11 +246,11 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
    * @param other The existing instance to copy.
    * @return A new DeviceEvent RecordBuilder
    */
-  public static com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder newBuilder(com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent other) {
+  public static com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder newBuilder(com.github.alexkiyanov.iotplatform.avro.DeviceEvent other) {
     if (other == null) {
-      return new com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder();
+      return new com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder();
     } else {
-      return new com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder(other);
+      return new com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder(other);
     }
   }
 
@@ -276,7 +276,7 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder other) {
+    private Builder(com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.eventId)) {
         this.eventId = data().deepCopy(fields()[0].schema(), other.eventId);
@@ -304,7 +304,7 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
      * Creates a Builder by copying an existing DeviceEvent instance
      * @param other The existing instance to copy.
      */
-    private Builder(com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent other) {
+    private Builder(com.github.alexkiyanov.iotplatform.avro.DeviceEvent other) {
       super(SCHEMA$, MODEL$);
       if (isValidValue(fields()[0], other.eventId)) {
         this.eventId = data().deepCopy(fields()[0].schema(), other.eventId);
@@ -342,7 +342,7 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
       * @param value The value of 'eventId'.
       * @return This builder.
       */
-    public com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder setEventId(java.lang.String value) {
+    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder setEventId(java.lang.String value) {
       validate(fields()[0], value);
       this.eventId = value;
       fieldSetFlags()[0] = true;
@@ -362,7 +362,7 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
       * Clears the value of the 'eventId' field.
       * @return This builder.
       */
-    public com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder clearEventId() {
+    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder clearEventId() {
       eventId = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -382,7 +382,7 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
       * @param value The value of 'deviceId'.
       * @return This builder.
       */
-    public com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder setDeviceId(java.lang.String value) {
+    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder setDeviceId(java.lang.String value) {
       validate(fields()[1], value);
       this.deviceId = value;
       fieldSetFlags()[1] = true;
@@ -402,7 +402,7 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
       * Clears the value of the 'deviceId' field.
       * @return This builder.
       */
-    public com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder clearDeviceId() {
+    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder clearDeviceId() {
       deviceId = null;
       fieldSetFlags()[1] = false;
       return this;
@@ -422,7 +422,7 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
       * @param value The value of 'timestamp'.
       * @return This builder.
       */
-    public com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder setTimestamp(long value) {
+    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder setTimestamp(long value) {
       validate(fields()[2], value);
       this.timestamp = value;
       fieldSetFlags()[2] = true;
@@ -442,7 +442,7 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
       * Clears the value of the 'timestamp' field.
       * @return This builder.
       */
-    public com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder clearTimestamp() {
+    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder clearTimestamp() {
       fieldSetFlags()[2] = false;
       return this;
     }
@@ -461,7 +461,7 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
       * @param value The value of 'type'.
       * @return This builder.
       */
-    public com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder setType(java.lang.String value) {
+    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder setType(java.lang.String value) {
       validate(fields()[3], value);
       this.type = value;
       fieldSetFlags()[3] = true;
@@ -481,7 +481,7 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
       * Clears the value of the 'type' field.
       * @return This builder.
       */
-    public com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder clearType() {
+    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder clearType() {
       type = null;
       fieldSetFlags()[3] = false;
       return this;
@@ -501,7 +501,7 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
       * @param value The value of 'payload'.
       * @return This builder.
       */
-    public com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder setPayload(java.lang.String value) {
+    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder setPayload(java.lang.String value) {
       validate(fields()[4], value);
       this.payload = value;
       fieldSetFlags()[4] = true;
@@ -521,7 +521,7 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
       * Clears the value of the 'payload' field.
       * @return This builder.
       */
-    public com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent.Builder clearPayload() {
+    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder clearPayload() {
       payload = null;
       fieldSetFlags()[4] = false;
       return this;

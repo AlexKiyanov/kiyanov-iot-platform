@@ -1,0 +1,34 @@
+@startuml events-collector-service-components
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Component diagram for Events Collector Service
+
+Container_Boundary(ecs, "Events Collector Service") {
+    Component(consumer, "DeviceEventsListener", "Spring Component", "Обрабатывает события устройств из Kafka")
+    Component(publisher, "DeviceIdPublisher", "Spring Service", "Публикует новые device ID в Kafka")
+    Component(repository, "DeviceEventRepository", "Spring Data Repository", "Управляет данными событий в Cassandra")
+    Component(cache, "DeviceIdCache", "Caffeine Cache", "Кэширует опубликованные device ID")
+    
+    ComponentDb(cassandra, "Cassandra", "Apache Cassandra", "Хранит события устройств") #lightgray
+    ComponentQueue(kafka_input, "Kafka Input Topic", "Apache Kafka", "Входящие события устройств") #lightgray
+    ComponentQueue(kafka_device_id, "Kafka Device ID Topic", "Apache Kafka", "Новые device ID") #lightgray
+}
+
+Rel(consumer, kafka_input, "Читает события батчами", "Kafka Consumer")
+Rel(consumer, repository, "Сохраняет события", "Spring Data")
+Rel(consumer, publisher, "Публикует device ID", "Spring Service")
+Rel(publisher, cache, "Проверяет кэш", "Caffeine")
+Rel(publisher, kafka_device_id, "Публикует device ID", "Kafka Producer")
+Rel(repository, cassandra, "CRUD операции", "Spring Data Cassandra")
+
+note top of publisher
+  Публикует только новые
+  device ID (дедупликация)
+end note
+
+note right of cache
+  Кэш для уникальных device ID.
+  Автоочистка старых записей по TTL (1140 min default)
+end note
+
+@enduml

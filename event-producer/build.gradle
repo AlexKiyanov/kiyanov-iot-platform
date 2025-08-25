@@ -1,0 +1,54 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.4'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.github.davidmc24.gradle.plugin.avro' version '1.9.1'
+}
+
+group = 'com.github.alexkiyanov.iotplatform'
+version = '1.0.0'
+description = 'Event producer for testing events-collector-service'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(24)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://packages.confluent.io/maven/'
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'io.confluent:kafka-avro-serializer:8.0.0'
+    implementation 'org.apache.avro:avro:1.12.0'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}
+
+avro {
+    createSetters = true
+    fieldVisibility = 'PRIVATE'
+    stringType = 'String'
+}
+
+tasks.register('generateAvroClasses', com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask) {
+    source = fileTree(dir: "src/main/resources/avro", include: "**/*.avsc")
+    outputDir = file("src/main/java")
+    fieldVisibility = 'PRIVATE'
+    createSetters = true
+    stringType = 'String'
+}
+
+compileJava.dependsOn generateAvroClasses
+
+clean {
+    delete 'src/main/java/com/github/alexkiyanov/iotplatform/avro'
+}
