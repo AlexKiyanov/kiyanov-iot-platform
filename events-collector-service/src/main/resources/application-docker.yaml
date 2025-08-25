@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: events-collector-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      base-path: /actuator
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+      environment: docker
+    distribution:
+      percentiles-histogram:
+        spring_kafka_listener_seconds: true
+        spring_data_cassandra_query_seconds: true
+        http_server_requests_seconds: true
+        spring_kafka_producer_record_send_total: true
+  endpoint:
+    prometheus:
+      enabled: true
+    health:
+      show-details: always
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+    otlp:
+      endpoint: http://alloy:4318
+      protocol: http/protobuf
+
+logging:
+  level:
+    com.github.alexkiyanov.iotplatform.ecs: DEBUG
+    org.springframework.kafka: DEBUG
+    org.springframework.data.cassandra: DEBUG

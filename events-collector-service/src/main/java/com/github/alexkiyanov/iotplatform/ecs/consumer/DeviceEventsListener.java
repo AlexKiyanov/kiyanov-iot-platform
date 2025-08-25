@@ -1,6 +1,6 @@
 package com.github.alexkiyanov.iotplatform.ecs.consumer;
 
-import com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent;
+import com.github.alexkiyanov.iotplatform.avro.DeviceEvent;
 import com.github.alexkiyanov.iotplatform.ecs.model.cassandra.DeviceEventEntity;
 import com.github.alexkiyanov.iotplatform.ecs.model.cassandra.DeviceEventKey;
 import com.github.alexkiyanov.iotplatform.ecs.repository.DeviceEventRepository;
@@ -25,13 +25,13 @@ public class DeviceEventsListener {
 
     public DeviceEventsListener(DeviceEventRepository repo,
                                 DeviceIdPublisher publisher,
-                                @Value("${spring.app.topics.input}") String inputTopic) {
+                                @Value("${app.topics.input}") String inputTopic) {
         this.repo = repo;
         this.publisher = publisher;
         this.inputTopic = inputTopic;
     }
 
-    @KafkaListener(topics = "#{'${spring.app.topics.input}'}", containerFactory = "kafkaBatchListenerFactory")
+    @KafkaListener(topics = "#{'${app.topics.input}'}", containerFactory = "kafkaBatchListenerFactory")
     public void onBatch(@Payload List<DeviceEvent> events, Acknowledgment ack) {
         if (events == null || events.isEmpty()) {
             return;

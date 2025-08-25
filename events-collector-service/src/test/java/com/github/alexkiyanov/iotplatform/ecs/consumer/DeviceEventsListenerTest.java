@@ -1,6 +1,6 @@
 package com.github.alexkiyanov.iotplatform.ecs.consumer;
 
-import com.github.alexkiyanov.iotplatform.ecs.avro.DeviceEvent;
+import com.github.alexkiyanov.iotplatform.avro.DeviceEvent;
 import com.github.alexkiyanov.iotplatform.ecs.model.cassandra.DeviceEventEntity;
 import com.github.alexkiyanov.iotplatform.ecs.model.cassandra.DeviceEventKey;
 import com.github.alexkiyanov.iotplatform.ecs.repository.DeviceEventRepository;
@@ -20,7 +20,10 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class DeviceEventsListenerTest {

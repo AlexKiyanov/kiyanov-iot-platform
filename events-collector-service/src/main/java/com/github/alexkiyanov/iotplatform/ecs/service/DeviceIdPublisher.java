@@ -16,10 +16,10 @@ public class DeviceIdPublisher {
     private final Cache<String, Boolean> cache;
     private final String deviceIdTopic;
 
-    public DeviceIdPublisher(KafkaTemplate<String, String> template,
+    public DeviceIdPublisher(KafkaTemplate<String, String> stringKafkaTemplate,
                              Cache<String, Boolean> cache,
-                             @Value("${spring.app.topics.deviceId}") String deviceIdTopic) {
-        this.template = template;
+                             @Value("${app.topics.deviceId}") String deviceIdTopic) {
+        this.template = stringKafkaTemplate;
         this.cache = cache;
         this.deviceIdTopic = deviceIdTopic;
     }
