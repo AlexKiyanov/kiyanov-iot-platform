@@ -14,10 +14,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 5142460564187090688L;
+  private static final long serialVersionUID = 4229567790929875653L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"DeviceEvent\",\"namespace\":\"com.github.alexkiyanov.iotplatform.avro\",\"fields\":[{\"name\":\"eventId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"deviceId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"timestamp\",\"type\":\"long\"},{\"name\":\"type\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"payload\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"DeviceEvent\",\"namespace\":\"com.github.alexkiyanov.iotplatform.avro\",\"fields\":[{\"name\":\"deviceId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"deviceType\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"createdAt\",\"type\":\"long\"},{\"name\":\"meta\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -73,11 +73,10 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
     return DECODER.decode(b);
   }
 
-  private java.lang.String eventId;
   private java.lang.String deviceId;
-  private long timestamp;
-  private java.lang.String type;
-  private java.lang.String payload;
+  private java.lang.String deviceType;
+  private long createdAt;
+  private java.lang.String meta;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -88,18 +87,16 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
 
   /**
    * All-args constructor.
-   * @param eventId The new value for eventId
    * @param deviceId The new value for deviceId
-   * @param timestamp The new value for timestamp
-   * @param type The new value for type
-   * @param payload The new value for payload
+   * @param deviceType The new value for deviceType
+   * @param createdAt The new value for createdAt
+   * @param meta The new value for meta
    */
-  public DeviceEvent(java.lang.String eventId, java.lang.String deviceId, java.lang.Long timestamp, java.lang.String type, java.lang.String payload) {
-    this.eventId = eventId;
+  public DeviceEvent(java.lang.String deviceId, java.lang.String deviceType, java.lang.Long createdAt, java.lang.String meta) {
     this.deviceId = deviceId;
-    this.timestamp = timestamp;
-    this.type = type;
-    this.payload = payload;
+    this.deviceType = deviceType;
+    this.createdAt = createdAt;
+    this.meta = meta;
   }
 
   @Override
@@ -112,11 +109,10 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
   @Override
   public java.lang.Object get(int field$) {
     switch (field$) {
-    case 0: return eventId;
-    case 1: return deviceId;
-    case 2: return timestamp;
-    case 3: return type;
-    case 4: return payload;
+    case 0: return deviceId;
+    case 1: return deviceType;
+    case 2: return createdAt;
+    case 3: return meta;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -126,30 +122,12 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
   @SuppressWarnings(value="unchecked")
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
-    case 0: eventId = value$ != null ? value$.toString() : null; break;
-    case 1: deviceId = value$ != null ? value$.toString() : null; break;
-    case 2: timestamp = (java.lang.Long)value$; break;
-    case 3: type = value$ != null ? value$.toString() : null; break;
-    case 4: payload = value$ != null ? value$.toString() : null; break;
+    case 0: deviceId = value$ != null ? value$.toString() : null; break;
+    case 1: deviceType = value$ != null ? value$.toString() : null; break;
+    case 2: createdAt = (java.lang.Long)value$; break;
+    case 3: meta = value$ != null ? value$.toString() : null; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
-  }
-
-  /**
-   * Gets the value of the 'eventId' field.
-   * @return The value of the 'eventId' field.
-   */
-  public java.lang.String getEventId() {
-    return eventId;
-  }
-
-
-  /**
-   * Sets the value of the 'eventId' field.
-   * @param value the value to set.
-   */
-  public void setEventId(java.lang.String value) {
-    this.eventId = value;
   }
 
   /**
@@ -170,54 +148,54 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
   }
 
   /**
-   * Gets the value of the 'timestamp' field.
-   * @return The value of the 'timestamp' field.
+   * Gets the value of the 'deviceType' field.
+   * @return The value of the 'deviceType' field.
    */
-  public long getTimestamp() {
-    return timestamp;
+  public java.lang.String getDeviceType() {
+    return deviceType;
   }
 
 
   /**
-   * Sets the value of the 'timestamp' field.
+   * Sets the value of the 'deviceType' field.
    * @param value the value to set.
    */
-  public void setTimestamp(long value) {
-    this.timestamp = value;
+  public void setDeviceType(java.lang.String value) {
+    this.deviceType = value;
   }
 
   /**
-   * Gets the value of the 'type' field.
-   * @return The value of the 'type' field.
+   * Gets the value of the 'createdAt' field.
+   * @return The value of the 'createdAt' field.
    */
-  public java.lang.String getType() {
-    return type;
+  public long getCreatedAt() {
+    return createdAt;
   }
 
 
   /**
-   * Sets the value of the 'type' field.
+   * Sets the value of the 'createdAt' field.
    * @param value the value to set.
    */
-  public void setType(java.lang.String value) {
-    this.type = value;
+  public void setCreatedAt(long value) {
+    this.createdAt = value;
   }
 
   /**
-   * Gets the value of the 'payload' field.
-   * @return The value of the 'payload' field.
+   * Gets the value of the 'meta' field.
+   * @return The value of the 'meta' field.
    */
-  public java.lang.String getPayload() {
-    return payload;
+  public java.lang.String getMeta() {
+    return meta;
   }
 
 
   /**
-   * Sets the value of the 'payload' field.
+   * Sets the value of the 'meta' field.
    * @param value the value to set.
    */
-  public void setPayload(java.lang.String value) {
-    this.payload = value;
+  public void setMeta(java.lang.String value) {
+    this.meta = value;
   }
 
   /**
@@ -261,11 +239,10 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<DeviceEvent>
     implements org.apache.avro.data.RecordBuilder<DeviceEvent> {
 
-    private java.lang.String eventId;
     private java.lang.String deviceId;
-    private long timestamp;
-    private java.lang.String type;
-    private java.lang.String payload;
+    private java.lang.String deviceType;
+    private long createdAt;
+    private java.lang.String meta;
 
     /** Creates a new Builder */
     private Builder() {
@@ -278,25 +255,21 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
      */
     private Builder(com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder other) {
       super(other);
-      if (isValidValue(fields()[0], other.eventId)) {
-        this.eventId = data().deepCopy(fields()[0].schema(), other.eventId);
+      if (isValidValue(fields()[0], other.deviceId)) {
+        this.deviceId = data().deepCopy(fields()[0].schema(), other.deviceId);
         fieldSetFlags()[0] = other.fieldSetFlags()[0];
       }
-      if (isValidValue(fields()[1], other.deviceId)) {
-        this.deviceId = data().deepCopy(fields()[1].schema(), other.deviceId);
+      if (isValidValue(fields()[1], other.deviceType)) {
+        this.deviceType = data().deepCopy(fields()[1].schema(), other.deviceType);
         fieldSetFlags()[1] = other.fieldSetFlags()[1];
       }
-      if (isValidValue(fields()[2], other.timestamp)) {
-        this.timestamp = data().deepCopy(fields()[2].schema(), other.timestamp);
+      if (isValidValue(fields()[2], other.createdAt)) {
+        this.createdAt = data().deepCopy(fields()[2].schema(), other.createdAt);
         fieldSetFlags()[2] = other.fieldSetFlags()[2];
       }
-      if (isValidValue(fields()[3], other.type)) {
-        this.type = data().deepCopy(fields()[3].schema(), other.type);
+      if (isValidValue(fields()[3], other.meta)) {
+        this.meta = data().deepCopy(fields()[3].schema(), other.meta);
         fieldSetFlags()[3] = other.fieldSetFlags()[3];
-      }
-      if (isValidValue(fields()[4], other.payload)) {
-        this.payload = data().deepCopy(fields()[4].schema(), other.payload);
-        fieldSetFlags()[4] = other.fieldSetFlags()[4];
       }
     }
 
@@ -306,66 +279,22 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
      */
     private Builder(com.github.alexkiyanov.iotplatform.avro.DeviceEvent other) {
       super(SCHEMA$, MODEL$);
-      if (isValidValue(fields()[0], other.eventId)) {
-        this.eventId = data().deepCopy(fields()[0].schema(), other.eventId);
+      if (isValidValue(fields()[0], other.deviceId)) {
+        this.deviceId = data().deepCopy(fields()[0].schema(), other.deviceId);
         fieldSetFlags()[0] = true;
       }
-      if (isValidValue(fields()[1], other.deviceId)) {
-        this.deviceId = data().deepCopy(fields()[1].schema(), other.deviceId);
+      if (isValidValue(fields()[1], other.deviceType)) {
+        this.deviceType = data().deepCopy(fields()[1].schema(), other.deviceType);
         fieldSetFlags()[1] = true;
       }
-      if (isValidValue(fields()[2], other.timestamp)) {
-        this.timestamp = data().deepCopy(fields()[2].schema(), other.timestamp);
+      if (isValidValue(fields()[2], other.createdAt)) {
+        this.createdAt = data().deepCopy(fields()[2].schema(), other.createdAt);
         fieldSetFlags()[2] = true;
       }
-      if (isValidValue(fields()[3], other.type)) {
-        this.type = data().deepCopy(fields()[3].schema(), other.type);
+      if (isValidValue(fields()[3], other.meta)) {
+        this.meta = data().deepCopy(fields()[3].schema(), other.meta);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.payload)) {
-        this.payload = data().deepCopy(fields()[4].schema(), other.payload);
-        fieldSetFlags()[4] = true;
-      }
-    }
-
-    /**
-      * Gets the value of the 'eventId' field.
-      * @return The value.
-      */
-    public java.lang.String getEventId() {
-      return eventId;
-    }
-
-
-    /**
-      * Sets the value of the 'eventId' field.
-      * @param value The value of 'eventId'.
-      * @return This builder.
-      */
-    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder setEventId(java.lang.String value) {
-      validate(fields()[0], value);
-      this.eventId = value;
-      fieldSetFlags()[0] = true;
-      return this;
-    }
-
-    /**
-      * Checks whether the 'eventId' field has been set.
-      * @return True if the 'eventId' field has been set, false otherwise.
-      */
-    public boolean hasEventId() {
-      return fieldSetFlags()[0];
-    }
-
-
-    /**
-      * Clears the value of the 'eventId' field.
-      * @return This builder.
-      */
-    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder clearEventId() {
-      eventId = null;
-      fieldSetFlags()[0] = false;
-      return this;
     }
 
     /**
@@ -383,9 +312,9 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
       * @return This builder.
       */
     public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder setDeviceId(java.lang.String value) {
-      validate(fields()[1], value);
+      validate(fields()[0], value);
       this.deviceId = value;
-      fieldSetFlags()[1] = true;
+      fieldSetFlags()[0] = true;
       return this;
     }
 
@@ -394,7 +323,7 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
       * @return True if the 'deviceId' field has been set, false otherwise.
       */
     public boolean hasDeviceId() {
-      return fieldSetFlags()[1];
+      return fieldSetFlags()[0];
     }
 
 
@@ -404,126 +333,126 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
       */
     public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder clearDeviceId() {
       deviceId = null;
+      fieldSetFlags()[0] = false;
+      return this;
+    }
+
+    /**
+      * Gets the value of the 'deviceType' field.
+      * @return The value.
+      */
+    public java.lang.String getDeviceType() {
+      return deviceType;
+    }
+
+
+    /**
+      * Sets the value of the 'deviceType' field.
+      * @param value The value of 'deviceType'.
+      * @return This builder.
+      */
+    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder setDeviceType(java.lang.String value) {
+      validate(fields()[1], value);
+      this.deviceType = value;
+      fieldSetFlags()[1] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'deviceType' field has been set.
+      * @return True if the 'deviceType' field has been set, false otherwise.
+      */
+    public boolean hasDeviceType() {
+      return fieldSetFlags()[1];
+    }
+
+
+    /**
+      * Clears the value of the 'deviceType' field.
+      * @return This builder.
+      */
+    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder clearDeviceType() {
+      deviceType = null;
       fieldSetFlags()[1] = false;
       return this;
     }
 
     /**
-      * Gets the value of the 'timestamp' field.
+      * Gets the value of the 'createdAt' field.
       * @return The value.
       */
-    public long getTimestamp() {
-      return timestamp;
+    public long getCreatedAt() {
+      return createdAt;
     }
 
 
     /**
-      * Sets the value of the 'timestamp' field.
-      * @param value The value of 'timestamp'.
+      * Sets the value of the 'createdAt' field.
+      * @param value The value of 'createdAt'.
       * @return This builder.
       */
-    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder setTimestamp(long value) {
+    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder setCreatedAt(long value) {
       validate(fields()[2], value);
-      this.timestamp = value;
+      this.createdAt = value;
       fieldSetFlags()[2] = true;
       return this;
     }
 
     /**
-      * Checks whether the 'timestamp' field has been set.
-      * @return True if the 'timestamp' field has been set, false otherwise.
+      * Checks whether the 'createdAt' field has been set.
+      * @return True if the 'createdAt' field has been set, false otherwise.
       */
-    public boolean hasTimestamp() {
+    public boolean hasCreatedAt() {
       return fieldSetFlags()[2];
     }
 
 
     /**
-      * Clears the value of the 'timestamp' field.
+      * Clears the value of the 'createdAt' field.
       * @return This builder.
       */
-    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder clearTimestamp() {
+    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder clearCreatedAt() {
       fieldSetFlags()[2] = false;
       return this;
     }
 
     /**
-      * Gets the value of the 'type' field.
+      * Gets the value of the 'meta' field.
       * @return The value.
       */
-    public java.lang.String getType() {
-      return type;
+    public java.lang.String getMeta() {
+      return meta;
     }
 
 
     /**
-      * Sets the value of the 'type' field.
-      * @param value The value of 'type'.
+      * Sets the value of the 'meta' field.
+      * @param value The value of 'meta'.
       * @return This builder.
       */
-    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder setType(java.lang.String value) {
+    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder setMeta(java.lang.String value) {
       validate(fields()[3], value);
-      this.type = value;
+      this.meta = value;
       fieldSetFlags()[3] = true;
       return this;
     }
 
     /**
-      * Checks whether the 'type' field has been set.
-      * @return True if the 'type' field has been set, false otherwise.
+      * Checks whether the 'meta' field has been set.
+      * @return True if the 'meta' field has been set, false otherwise.
       */
-    public boolean hasType() {
+    public boolean hasMeta() {
       return fieldSetFlags()[3];
     }
 
 
     /**
-      * Clears the value of the 'type' field.
+      * Clears the value of the 'meta' field.
       * @return This builder.
       */
-    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder clearType() {
-      type = null;
+    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder clearMeta() {
+      meta = null;
       fieldSetFlags()[3] = false;
-      return this;
-    }
-
-    /**
-      * Gets the value of the 'payload' field.
-      * @return The value.
-      */
-    public java.lang.String getPayload() {
-      return payload;
-    }
-
-
-    /**
-      * Sets the value of the 'payload' field.
-      * @param value The value of 'payload'.
-      * @return This builder.
-      */
-    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder setPayload(java.lang.String value) {
-      validate(fields()[4], value);
-      this.payload = value;
-      fieldSetFlags()[4] = true;
-      return this;
-    }
-
-    /**
-      * Checks whether the 'payload' field has been set.
-      * @return True if the 'payload' field has been set, false otherwise.
-      */
-    public boolean hasPayload() {
-      return fieldSetFlags()[4];
-    }
-
-
-    /**
-      * Clears the value of the 'payload' field.
-      * @return This builder.
-      */
-    public com.github.alexkiyanov.iotplatform.avro.DeviceEvent.Builder clearPayload() {
-      payload = null;
-      fieldSetFlags()[4] = false;
       return this;
     }
 
@@ -532,11 +461,10 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
     public DeviceEvent build() {
       try {
         DeviceEvent record = new DeviceEvent();
-        record.eventId = fieldSetFlags()[0] ? this.eventId : (java.lang.String) defaultValue(fields()[0]);
-        record.deviceId = fieldSetFlags()[1] ? this.deviceId : (java.lang.String) defaultValue(fields()[1]);
-        record.timestamp = fieldSetFlags()[2] ? this.timestamp : (java.lang.Long) defaultValue(fields()[2]);
-        record.type = fieldSetFlags()[3] ? this.type : (java.lang.String) defaultValue(fields()[3]);
-        record.payload = fieldSetFlags()[4] ? this.payload : (java.lang.String) defaultValue(fields()[4]);
+        record.deviceId = fieldSetFlags()[0] ? this.deviceId : (java.lang.String) defaultValue(fields()[0]);
+        record.deviceType = fieldSetFlags()[1] ? this.deviceType : (java.lang.String) defaultValue(fields()[1]);
+        record.createdAt = fieldSetFlags()[2] ? this.createdAt : (java.lang.Long) defaultValue(fields()[2]);
+        record.meta = fieldSetFlags()[3] ? this.meta : (java.lang.String) defaultValue(fields()[3]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -569,15 +497,13 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
   @Override public void customEncode(org.apache.avro.io.Encoder out)
     throws java.io.IOException
   {
-    out.writeString(this.eventId);
-
     out.writeString(this.deviceId);
 
-    out.writeLong(this.timestamp);
+    out.writeString(this.deviceType);
 
-    out.writeString(this.type);
+    out.writeLong(this.createdAt);
 
-    out.writeString(this.payload);
+    out.writeString(this.meta);
 
   }
 
@@ -586,37 +512,31 @@ public class DeviceEvent extends org.apache.avro.specific.SpecificRecordBase imp
   {
     org.apache.avro.Schema.Field[] fieldOrder = in.readFieldOrderIfDiff();
     if (fieldOrder == null) {
-      this.eventId = in.readString();
-
       this.deviceId = in.readString();
 
-      this.timestamp = in.readLong();
+      this.deviceType = in.readString();
 
-      this.type = in.readString();
+      this.createdAt = in.readLong();
 
-      this.payload = in.readString();
+      this.meta = in.readString();
 
     } else {
-      for (int i = 0; i < 5; i++) {
+      for (int i = 0; i < 4; i++) {
         switch (fieldOrder[i].pos()) {
         case 0:
-          this.eventId = in.readString();
-          break;
-
-        case 1:
           this.deviceId = in.readString();
           break;
 
+        case 1:
+          this.deviceType = in.readString();
+          break;
+
         case 2:
-          this.timestamp = in.readLong();
+          this.createdAt = in.readLong();
           break;
 
         case 3:
-          this.type = in.readString();
-          break;
-
-        case 4:
-          this.payload = in.readString();
+          this.meta = in.readString();
           break;
 
         default:

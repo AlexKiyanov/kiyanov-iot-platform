@@ -1,12 +1,12 @@
-# ./monitoring/prometheus/prometheus.yml
 global:
   scrape_interval: 15s
+  scrape_timeout: 10s
   evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: 'prometheus'
+  - job_name: prometheus
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ['prometheus:9090']
 
   - job_name: 'postgres-exporter'
     static_configs:
@@ -20,26 +20,41 @@ scrape_configs:
     metrics_path: /actuator/prometheus
     static_configs:
       - targets: ['events-collector-service:8090']
-    scrape_timeout: 10s
-    honor_labels: true
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: instance
-        regex: '([^:]+)(?::\d+)?'
-        replacement: '${1}'
-      - source_labels: [__meta_kubernetes_pod_name]
-        target_label: pod
-      - source_labels: [__meta_kubernetes_namespace]
-        target_label: namespace
-      - source_labels: [__meta_kubernetes_service_name]
-        target_label: service
+#    scrape_timeout: 10s
+#    honor_labels: true
+#    relabel_configs:
+#      - source_labels: [__address__]
+#        target_label: instance
+#        regex: '([^:]+)(?::\d+)?'
+#        replacement: '${1}'
+#      - source_labels: [__meta_kubernetes_pod_name]
+#        target_label: pod
+#      - source_labels: [__meta_kubernetes_namespace]
+#        target_label: namespace
+#      - source_labels: [__meta_kubernetes_service_name]
+#        target_label: service
 
-  - job_name: 'grafana'
-    static_configs:
-      - targets: ['grafana:3000']
+  - job_name: keycloak
     metrics_path: /metrics
+    static_configs:
+      - targets: ['keycloak:9080']
 
   - job_name: 'alloy'
     static_configs:
       - targets: ['alloy:9080']
     metrics_path: /metrics
+
+  - job_name: 'loki'
+    static_configs:
+      - targets: ['alloy:3100']
+    metrics_path: /metrics
+
+  - job_name: 'tempo'
+    static_configs:
+      - targets: ['tempo:3200']
+    metrics_path: /metrics
+
+  - job_name: 'grafana'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['grafana:3000']

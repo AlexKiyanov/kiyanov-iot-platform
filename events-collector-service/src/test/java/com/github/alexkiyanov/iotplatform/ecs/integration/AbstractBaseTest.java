@@ -38,7 +38,7 @@ public abstract class AbstractBaseTest {
                 .waitingFor(Wait.forLogMessage(".*Kafka Server started.*", 1))
                 .withReuse(true);
 
-        registry = new GenericContainer<>(DockerImageName.parse("confluentinc/cp-schema-registry:7.5.0"))
+        registry = new GenericContainer<>(DockerImageName.parse("confluentinc/cp-schema-registry:8.0.0"))
                 .withNetwork(NETWORK)
                 .withNetworkAliases("schema-registry")
                 .withExposedPorts(8081)

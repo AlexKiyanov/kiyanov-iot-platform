@@ -1,5 +1,6 @@
 package com.github.alexkiyanov.iotplatform.ecs.service;
 
+import com.github.alexkiyanov.iotplatform.avro.DeviceInfo;
 import com.github.benmanes.caffeine.cache.Cache;
 
 import org.slf4j.Logger;
@@ -12,14 +13,14 @@ import org.springframework.stereotype.Service;
 public class DeviceIdPublisher {
     private static final Logger log = LoggerFactory.getLogger(DeviceIdPublisher.class);
 
-    private final KafkaTemplate<String, String> template;
+    private final KafkaTemplate<String, DeviceInfo> template;
     private final Cache<String, Boolean> cache;
     private final String deviceIdTopic;
 
-    public DeviceIdPublisher(KafkaTemplate<String, String> stringKafkaTemplate,
+    public DeviceIdPublisher(KafkaTemplate<String, DeviceInfo> avroKafkaTemplate,
                              Cache<String, Boolean> cache,
                              @Value("${app.topics.deviceId}") String deviceIdTopic) {
-        this.template = stringKafkaTemplate;
+        this.template = avroKafkaTemplate;
         this.cache = cache;
         this.deviceIdTopic = deviceIdTopic;
     }
@@ -33,8 +34,22 @@ public class DeviceIdPublisher {
 
         if (prev == null) {
             cache.put(deviceId, Boolean.TRUE);
-            log.debug("Publishing new deviceId={}", deviceId);
-            template.send(deviceIdTopic, deviceId);
+            log.debug("Publishing new device info for deviceId={}", deviceId);
+            
+            // Создаем полную информацию об устройстве
+            long currentTime = System.currentTimeMillis();
+            DeviceInfo deviceInfo = DeviceInfo.newBuilder()
+                    .setDeviceId(deviceId)
+                    .setDeviceType("unknown") // Будет определено позже
+                    .setManufacturer("unknown") // Будет определено позже
+                    .setModel("unknown") // Будет определено позже
+                    .setFirmwareVersion("unknown") // Будет определено позже
+                    .setFirstSeen(currentTime)
+                    .setLastSeen(currentTime)
+                    .setStatus("active")
+                    .build();
+                    
+            template.send(deviceIdTopic, deviceId, deviceInfo);
         } else {
             log.trace("deviceId={} already published", deviceId);
         }

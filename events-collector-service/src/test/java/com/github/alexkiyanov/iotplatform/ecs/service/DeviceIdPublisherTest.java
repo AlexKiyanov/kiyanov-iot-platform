@@ -1,5 +1,6 @@
 package com.github.alexkiyanov.iotplatform.ecs.service;
 
+import com.github.alexkiyanov.iotplatform.avro.DeviceInfo;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ import static org.mockito.Mockito.*;
 class DeviceIdPublisherTest {
 
     @Mock
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private KafkaTemplate<String, DeviceInfo> kafkaTemplate;
 
     @Mock
     private Cache<String, Boolean> cache;
@@ -47,8 +48,8 @@ class DeviceIdPublisherTest {
         String deviceId = "device-123";
         when(cache.getIfPresent(deviceId)).thenReturn(null);
         
-        CompletableFuture<SendResult<String, String>> future = new CompletableFuture<>();
-        when(kafkaTemplate.send(eq(DEVICE_ID_TOPIC), eq(deviceId))).thenReturn(future);
+        CompletableFuture<SendResult<String, DeviceInfo>> future = new CompletableFuture<>();
+        when(kafkaTemplate.send(eq(DEVICE_ID_TOPIC), eq(deviceId), any(DeviceInfo.class))).thenReturn(future);
 
         // When
         deviceIdPublisher.publishIfNew(deviceId);
@@ -56,7 +57,7 @@ class DeviceIdPublisherTest {
         // Then
         verify(cache).getIfPresent(deviceId);
         verify(cache).put(deviceId, Boolean.TRUE);
-        verify(kafkaTemplate).send(DEVICE_ID_TOPIC, deviceId);
+        verify(kafkaTemplate).send(eq(DEVICE_ID_TOPIC), eq(deviceId), any(DeviceInfo.class));
     }
 
     @Test
@@ -80,8 +81,8 @@ class DeviceIdPublisherTest {
         String deviceId = "";
         when(cache.getIfPresent(deviceId)).thenReturn(null);
         
-        CompletableFuture<SendResult<String, String>> future = new CompletableFuture<>();
-        when(kafkaTemplate.send(eq(DEVICE_ID_TOPIC), eq(deviceId))).thenReturn(future);
+        CompletableFuture<SendResult<String, DeviceInfo>> future = new CompletableFuture<>();
+        when(kafkaTemplate.send(eq(DEVICE_ID_TOPIC), eq(deviceId), any(DeviceInfo.class))).thenReturn(future);
 
         // When
         deviceIdPublisher.publishIfNew(deviceId);
@@ -89,7 +90,7 @@ class DeviceIdPublisherTest {
         // Then
         verify(cache).getIfPresent(deviceId);
         verify(cache).put(deviceId, Boolean.TRUE);
-        verify(kafkaTemplate).send(DEVICE_ID_TOPIC, deviceId);
+        verify(kafkaTemplate).send(eq(DEVICE_ID_TOPIC), eq(deviceId), any(DeviceInfo.class));
     }
 
     @Test
@@ -101,8 +102,8 @@ class DeviceIdPublisherTest {
         when(cache.getIfPresent(deviceId1)).thenReturn(null);
         when(cache.getIfPresent(deviceId2)).thenReturn(null);
         
-        CompletableFuture<SendResult<String, String>> future = new CompletableFuture<>();
-        when(kafkaTemplate.send(anyString(), anyString())).thenReturn(future);
+        CompletableFuture<SendResult<String, DeviceInfo>> future = new CompletableFuture<>();
+        when(kafkaTemplate.send(anyString(), anyString(), any(DeviceInfo.class))).thenReturn(future);
 
         // When
         deviceIdPublisher.publishIfNew(deviceId1);
@@ -113,8 +114,8 @@ class DeviceIdPublisherTest {
         verify(cache).getIfPresent(deviceId2);
         verify(cache).put(deviceId1, Boolean.TRUE);
         verify(cache).put(deviceId2, Boolean.TRUE);
-        verify(kafkaTemplate).send(DEVICE_ID_TOPIC, deviceId1);
-        verify(kafkaTemplate).send(DEVICE_ID_TOPIC, deviceId2);
+        verify(kafkaTemplate).send(eq(DEVICE_ID_TOPIC), eq(deviceId1), any(DeviceInfo.class));
+        verify(kafkaTemplate).send(eq(DEVICE_ID_TOPIC), eq(deviceId2), any(DeviceInfo.class));
     }
 
     @Test

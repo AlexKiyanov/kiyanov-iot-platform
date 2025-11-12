@@ -1,6 +1,5 @@
--- ./postgres-init/init-keycloak.sql
-CREATE USER keycloak WITH PASSWORD 'keycloak';
 CREATE DATABASE keycloak;
+CREATE USER keycloak WITH PASSWORD 'keycloak';
 GRANT ALL PRIVILEGES ON DATABASE keycloak TO keycloak;
 \c keycloak
 GRANT USAGE, CREATE ON SCHEMA public TO keycloak;

@@ -1,0 +1,17 @@
+{
+  "type": "record",
+  "name": "PoisonMessage",
+  "namespace": "com.github.alexkiyanov.iotplatform.avro",
+  "fields": [
+    { "name": "originalTopic", "type": "string" },
+    { "name": "originalKey", "type": "string" },
+    { "name": "originalValue", "type": "bytes" },
+    { "name": "errorMessage", "type": "string" },
+    { "name": "errorType", "type": "string" },
+    { "name": "retryAttempts", "type": "int" },
+    { "name": "firstFailureTime", "type": "long" },
+    { "name": "lastFailureTime", "type": "long" },
+    { "name": "deviceId", "type": ["null", "string"], "default": null },
+    { "name": "metadata", "type": ["null", "string"], "default": null }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "DeviceInfo",
+  "namespace": "com.github.alexkiyanov.iotplatform.avro",
+  "fields": [
+    { "name": "deviceId", "type": "string" },
+    { "name": "deviceType", "type": "string" },
+    { "name": "manufacturer", "type": "string" },
+    { "name": "model", "type": "string" },
+    { "name": "firmwareVersion", "type": "string" },
+    { "name": "firstSeen", "type": "long" },
+    { "name": "lastSeen", "type": "long" },
+    { "name": "status", "type": "string" }
+  ]
+}

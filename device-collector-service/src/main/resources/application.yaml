@@ -1,0 +1,107 @@
+server:
+  port: 8092
+  error:
+    whitelabel:
+      enabled: false
+
+spring:
+  application:
+    name: device-collector-service
+  config:
+    activate:
+      on-profile: "!sharding"
+  kafka:
+    bootstrap-servers: kafka1:9092,kafka2:9093,kafka3:9094
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP:dcs-consumer}
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      properties:
+        specific.avro.reader: true
+        schema.registry.url: ${SCHEMA_REGISTRY_URL:http://schema-registry:8081}
+    listener:
+      ack-mode: BATCH
+      type: BATCH
+      concurrency: ${KAFKA_CONCURRENCY:3}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      properties:
+        schema.registry.url: ${SCHEMA_REGISTRY_URL:http://schema-registry:8081}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  flyway:
+    enabled: false
+
+management:
+  server:
+    port: 8092
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      base-path: /actuator
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+      otlp:
+        enabled: true
+        endpoint: http://alloy:4318
+        protocol: http/protobuf
+        step: 15s
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        spring_kafka_listener_seconds: true
+        spring_data_jpa_repository_invocations_seconds: true
+        http_server_requests_seconds: true
+        spring_kafka_producer_record_send_total: true
+    enable:
+      jvm: true
+      process: true
+      system: true
+      logback: true
+      hikaricp: true
+      tomcat: true
+      jpa: true
+      caffeine: true
+  endpoint:
+    prometheus:
+      enabled: true
+    health:
+      show-details: always
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+    otlp:
+      endpoint: http://alloy:4318
+      protocol: http/protobuf
+  otel:
+    metrics:
+      exporter: otlp
+    traces:
+      exporter: otlp
+
+app:
+  topics:
+    input: ${INPUT_TOPIC:device-id-topic}
+    output: ${OUTPUT_TOPIC:device-info-topic}
+    dead-letter: ${DEAD_LETTER_TOPIC:device-id-dlt}
+  cache:
+    deviceInfoTtl: ${DEVICE_INFO_TTL_MINUTES:1440}
+  retry:
+    max-attempts: ${RETRY_MAX_ATTEMPTS:3}
+    initial-delay-ms: ${RETRY_INITIAL_DELAY_MS:1000}
+    max-delay-ms: ${RETRY_MAX_DELAY_MS:10000}
+    multiplier: ${RETRY_MULTIPLIER:2.0}

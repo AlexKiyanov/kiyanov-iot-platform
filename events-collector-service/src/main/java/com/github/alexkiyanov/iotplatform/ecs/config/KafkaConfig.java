@@ -1,6 +1,7 @@
 package com.github.alexkiyanov.iotplatform.ecs.config;
 
 import com.github.alexkiyanov.iotplatform.avro.DeviceEvent;
+import com.github.alexkiyanov.iotplatform.avro.DeviceInfo;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -86,5 +87,22 @@ public class KafkaConfig {
     @Bean
     public KafkaTemplate<String, Object> kafkaTemplate() {
         return new KafkaTemplate<>(objectProducerFactory());
+    }
+
+    @Bean
+    public ProducerFactory<String, DeviceInfo> deviceInfoProducerFactory() {
+        final Map<String, Object> props = new HashMap<>();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, io.confluent.kafka.serializers.KafkaAvroSerializer.class);
+        props.put(ProducerConfig.ACKS_CONFIG, "all");
+        props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
+        props.put("schema.registry.url", schemaRegistryUrl);
+        return new DefaultKafkaProducerFactory<>(props);
+    }
+
+    @Bean
+    public KafkaTemplate<String, DeviceInfo> avroKafkaTemplate() {
+        return new KafkaTemplate<>(deviceInfoProducerFactory());
     }
 }

@@ -1,0 +1,82 @@
+spring:
+  config:
+    activate:
+      on-profile: migration
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+    clean-disabled: true
+    # Миграции будут применены к каждому datasource через ShardingSphere
+  shardingsphere:
+    datasource:
+      names: ds0,ds1,ds0_replica,ds1_replica
+      ds0:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: org.postgresql.Driver
+        jdbc-url: jdbc:postgresql://postgres-shard1:5432/dcs_shard1
+        username: ${POSTGRES_USER:postgres}
+        password: ${POSTGRES_PASSWORD:postgres}
+        hikari:
+          maximum-pool-size: 20
+          minimum-idle: 5
+      ds1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: org.postgresql.Driver
+        jdbc-url: jdbc:postgresql://postgres-shard2:5432/dcs_shard2
+        username: ${POSTGRES_USER:postgres}
+        password: ${POSTGRES_PASSWORD:postgres}
+        hikari:
+          maximum-pool-size: 20
+          minimum-idle: 5
+      ds0_replica:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: org.postgresql.Driver
+        jdbc-url: jdbc:postgresql://postgres-shard1-replica:5432/dcs_shard1_replica
+        username: ${POSTGRES_USER:postgres}
+        password: ${POSTGRES_PASSWORD:postgres}
+        hikari:
+          maximum-pool-size: 20
+          minimum-idle: 5
+      ds1_replica:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: org.postgresql.Driver
+        jdbc-url: jdbc:postgresql://postgres-shard2-replica:5432/dcs_shard2_replica
+        username: ${POSTGRES_USER:postgres}
+        password: ${POSTGRES_PASSWORD:postgres}
+        hikari:
+          maximum-pool-size: 20
+          minimum-idle: 5
+    rules:
+      sharding:
+        tables:
+          device_info:
+            actual-data-nodes: ds0_group.device_info,ds1_group.device_info
+            database-strategy:
+              standard:
+                sharding-column: device_id
+                sharding-algorithm-name: device_id_hash
+        sharding-algorithms:
+          device_id_hash:
+            type: HASH_MOD
+            props:
+              sharding-count: 2
+      readwrite-splitting:
+        data-sources:
+          ds0_group:
+            static-strategy:
+              write-data-source-name: ds0
+              read-data-source-names: ds0_replica
+          ds1_group:
+            static-strategy:
+              write-data-source-name: ds1
+              read-data-source-names: ds1_replica
+        load-balancers:
+          ds0_group:
+            type: ROUND_ROBIN
+          ds1_group:
+            type: ROUND_ROBIN
+    props:
+      sql-show: true
+      sql-simple: true

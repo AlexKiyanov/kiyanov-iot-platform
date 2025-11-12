@@ -14,6 +14,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class DeviceEventsListener {
@@ -39,12 +40,16 @@ public class DeviceEventsListener {
         log.info("Received batch: {} messages from {}", events.size(), inputTopic);
 
         final List<DeviceEventEntity> entities = events.stream()
-                .map(e -> new DeviceEventEntity(
-                        new DeviceEventKey(e.getDeviceId(), e.getEventId()),
-                        e.getTimestamp(),
-                        e.getType(),
-                        e.getPayload())
-                ).toList();
+                .map(e -> {
+                    // Генерируем eventId из deviceId + createdAt для уникальности
+                    String eventId = e.getDeviceId() + "-" + e.getCreatedAt() + "-" + UUID.randomUUID().toString().substring(0, 8);
+                    return new DeviceEventEntity(
+                            new DeviceEventKey(e.getDeviceId(), eventId),
+                            e.getCreatedAt(),
+                            e.getDeviceType(),
+                            e.getMeta());
+                })
+                .toList();
 
         repo.saveAll(entities);
 

@@ -1,0 +1,153 @@
+server:
+  port: 0  # Random port для тестов
+
+spring:
+  application:
+    name: device-collector-service-test
+  config:
+    activate:
+      on-profile: integration-test
+  shardingsphere:
+    datasource:
+      names: ds0,ds1,ds0_replica,ds1_replica
+      ds0:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: org.postgresql.Driver
+        jdbc-url: jdbc:postgresql://localhost:5432/dcs_shard1
+        username: postgres
+        password: postgres
+        hikari:
+          maximum-pool-size: 10
+          minimum-idle: 2
+      ds1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: org.postgresql.Driver
+        jdbc-url: jdbc:postgresql://localhost:5432/dcs_shard2
+        username: postgres
+        password: postgres
+        hikari:
+          maximum-pool-size: 10
+          minimum-idle: 2
+      ds0_replica:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: org.postgresql.Driver
+        jdbc-url: jdbc:postgresql://localhost:5432/dcs_shard1_replica
+        username: postgres
+        password: postgres
+        hikari:
+          maximum-pool-size: 10
+          minimum-idle: 2
+      ds1_replica:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: org.postgresql.Driver
+        jdbc-url: jdbc:postgresql://localhost:5432/dcs_shard2_replica
+        username: postgres
+        password: postgres
+        hikari:
+          maximum-pool-size: 10
+          minimum-idle: 2
+    rules:
+      sharding:
+        tables:
+          device_info:
+            actual-data-nodes: ds0_group.device_info,ds1_group.device_info
+            database-strategy:
+              standard:
+                sharding-column: device_id
+                sharding-algorithm-name: device_id_hash
+        sharding-algorithms:
+          device_id_hash:
+            type: HASH_MOD
+            props:
+              sharding-count: 2
+      readwrite-splitting:
+        data-sources:
+          ds0_group:
+            static-strategy:
+              write-data-source-name: ds0
+              read-data-source-names: ds0_replica
+          ds1_group:
+            static-strategy:
+              write-data-source-name: ds1
+              read-data-source-names: ds1_replica
+        load-balancers:
+          ds0_group:
+            type: ROUND_ROBIN
+          ds1_group:
+            type: ROUND_ROBIN
+    props:
+      sql-show: true
+      sql-simple: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: false
+    clean-disabled: false
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: test-dcs-consumer-group
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      properties:
+        specific.avro.reader: true
+        schema.registry.url: http://localhost:8081
+    listener:
+      ack-mode: BATCH
+      type: BATCH
+      concurrency: 1
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      properties:
+        schema.registry.url: http://localhost:8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  metrics:
+    export:
+      prometheus:
+        enabled: false
+      otlp:
+        enabled: false
+  tracing:
+    enabled: false
+  otel:
+    metrics:
+      exporter: none
+    traces:
+      exporter: none
+
+app:
+  topics:
+    input: device-id-topic
+    output: device-info-topic
+    dead-letter: device-id-dlt
+  cache:
+    deviceInfoTtl: 1440
+  retry:
+    max-attempts: 3
+    initial-delay-ms: 1000
+    max-delay-ms: 10000
+    multiplier: 2.0
+
+logging:
+  level:
+    com.github.alexkiyanov.iotplatform.dcs: DEBUG
+    org.apache.shardingsphere: DEBUG
+    org.springframework.kafka: DEBUG
+    org.testcontainers: INFO
